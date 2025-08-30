@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Workflow Manager</title>
+    <meta name="description" content="A comprehensive workflow management application for company operations, project management, and team collaboration">
+    <meta name="keywords" content="workflow, project management, task management, team collaboration, productivity">
+    <meta name="author" content="Company Workflow Manager">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="WorkFlow">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/180x180/667eea/ffffff?text=WF">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-cogs"></i> WorkFlow</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item" data-section="projects">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </li>
+                <li class="nav-item" data-section="tasks">
+                    <i class="fas fa-tasks"></i>
+                    <span>Tasks</span>
+                </li>
+                <li class="nav-item" data-section="team">
+                    <i class="fas fa-users"></i>
+                    <span>Team</span>
+                </li>
+                <li class="nav-item" data-section="workflows">
+                    <i class="fas fa-sitemap"></i>
+                    <span>Workflows</span>
+                </li>
+                <li class="nav-item" data-section="analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 id="page-title">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search..." id="search-input">
+                    </div>
+                    <div class="user-menu">
+                        <img src="https://via.placeholder.com/40" alt="User" class="user-avatar">
+                        <span class="user-name">John Doe</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="dashboard-grid">
+                    <!-- Quick Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-projects">12</h3>
+                                <p>Active Projects</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="total-tasks">48</h3>
+                                <p>Pending Tasks</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="team-members">8</h3>
+                                <p>Team Members</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3 id="overdue-tasks">3</h3>
+                                <p>Overdue Tasks</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="dashboard-row">
+                        <div class="dashboard-card">
+                            <h3>Recent Activity</h3>
+                            <div class="activity-list" id="activity-list">
+                                <!-- Activity items will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Quick Actions</h3>
+                            <div class="quick-actions">
+                                <button class="action-btn" onclick="showModal('new-project')">
+                                    <i class="fas fa-plus"></i>
+                                    New Project
+                                </button>
+                                <button class="action-btn" onclick="showModal('new-task')">
+                                    <i class="fas fa-plus"></i>
+                                    New Task
+                                </button>
+                                <button class="action-btn" onclick="showModal('new-team-member')">
+                                    <i class="fas fa-user-plus"></i>
+                                    Add Team Member
+                                </button>
+                                <button class="action-btn" onclick="showModal('new-workflow')">
+                                    <i class="fas fa-sitemap"></i>
+                                    Create Workflow
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Progress -->
+                    <div class="dashboard-card full-width">
+                        <h3>Project Progress</h3>
+                        <div class="project-progress-grid" id="project-progress">
+                            <!-- Project progress items will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="content-section">
+                <div class="section-header">
+                    <h2>Projects</h2>
+                    <button class="btn btn-primary" onclick="showModal('new-project')">
+                        <i class="fas fa-plus"></i> New Project
+                    </button>
+                </div>
+                <div class="projects-grid" id="projects-grid">
+                    <!-- Projects will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Tasks Section -->
+            <section id="tasks" class="content-section">
+                <div class="section-header">
+                    <h2>Tasks</h2>
+                    <button class="btn btn-primary" onclick="showModal('new-task')">
+                        <i class="fas fa-plus"></i> New Task
+                    </button>
+                </div>
+                <div class="tasks-container">
+                    <div class="task-filters">
+                        <select id="task-status-filter">
+                            <option value="all">All Status</option>
+                            <option value="todo">To Do</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="review">Review</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <select id="task-priority-filter">
+                            <option value="all">All Priorities</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="tasks-list" id="tasks-list">
+                        <!-- Tasks will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team Section -->
+            <section id="team" class="content-section">
+                <div class="section-header">
+                    <h2>Team Members</h2>
+                    <button class="btn btn-primary" onclick="showModal('new-team-member')">
+                        <i class="fas fa-plus"></i> Add Member
+                    </button>
+                </div>
+                <div class="team-grid" id="team-grid">
+                    <!-- Team members will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Workflows Section -->
+            <section id="workflows" class="content-section">
+                <div class="section-header">
+                    <h2>Workflows</h2>
+                    <button class="btn btn-primary" onclick="showModal('new-workflow')">
+                        <i class="fas fa-plus"></i> Create Workflow
+                    </button>
+                </div>
+                <div class="workflows-grid" id="workflows-grid">
+                    <!-- Workflows will be populated by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics" class="content-section">
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Task Completion Rate</h3>
+                        <div class="chart-container">
+                            <canvas id="completion-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Project Timeline</h3>
+                        <div class="chart-container">
+                            <canvas id="timeline-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Team Performance</h3>
+                        <div class="chart-container">
+                            <canvas id="performance-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Workload Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="workload-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Modal Title</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

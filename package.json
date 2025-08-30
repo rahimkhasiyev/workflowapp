@@ -1,0 +1,33 @@
+{
+  "name": "company-workflow-manager",
+  "version": "1.0.0",
+  "description": "A comprehensive, modern workflow management application for company operations",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 3000 -o",
+    "build": "echo 'No build step required for static files'",
+    "deploy": "echo 'Deploy to your preferred hosting platform'"
+  },
+  "keywords": [
+    "workflow",
+    "project-management",
+    "task-management",
+    "team-collaboration",
+    "dashboard",
+    "analytics",
+    "productivity"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rahimkhasiyev/workflowapp.git"
+  },
+  "homepage": "https://rahimkhasiyev.github.io/workflowapp",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
