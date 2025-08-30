@@ -803,6 +803,74 @@ body {
     margin-top: 30px;
 }
 
+/* Notifications */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 3000;
+    animation: slideIn 0.3s ease;
+    max-width: 300px;
+}
+
+.notification-success {
+    border-left: 4px solid #48bb78;
+}
+
+.notification-error {
+    border-left: 4px solid #e53e3e;
+}
+
+.notification-info {
+    border-left: 4px solid #667eea;
+}
+
+.notification-content {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.notification-content span {
+    flex: 1;
+    font-size: 14px;
+    color: #2d3748;
+}
+
+.notification-content button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #718096;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-content button:hover {
+    color: #2d3748;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .sidebar {

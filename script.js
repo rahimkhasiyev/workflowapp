@@ -9,7 +9,8 @@ class WorkflowApp {
         
         this.initializeApp();
         this.setupEventListeners();
-        this.loadSampleData();
+        this.loadFromLocalStorage();
+        this.loadSampleData(); // Only loads if no saved data exists
         this.updateDashboard();
     }
 
@@ -182,6 +183,11 @@ class WorkflowApp {
     }
 
     loadSampleData() {
+        // Only load sample data if no saved data exists
+        if (this.projects.length > 0 || this.teamMembers.length > 0) {
+            return; // Skip loading sample data if we already have data
+        }
+        
         // Sample Projects
         this.projects = [
             {
@@ -660,6 +666,163 @@ class WorkflowApp {
         if (priorityFilter) {
             priorityFilter.addEventListener('change', () => this.filterTasks());
         }
+
+        // Form submission handlers
+        this.setupFormHandlers();
+    }
+
+    setupFormHandlers() {
+        // Handle form submissions when modals are shown
+        document.addEventListener('submit', (e) => {
+            if (e.target.id === 'team-member-form') {
+                e.preventDefault();
+                this.addTeamMember(e.target);
+            } else if (e.target.id === 'project-form') {
+                e.preventDefault();
+                this.addProject(e.target);
+            } else if (e.target.id === 'task-form') {
+                e.preventDefault();
+                this.addTask(e.target);
+            } else if (e.target.id === 'workflow-form') {
+                e.preventDefault();
+                this.addWorkflow(e.target);
+            }
+        });
+    }
+
+    addTeamMember(form) {
+        const formData = new FormData(form);
+        const newMember = {
+            id: this.teamMembers.length + 1,
+            name: form.querySelector('#member-name').value,
+            email: form.querySelector('#member-email').value,
+            role: form.querySelector('#member-role').value,
+            department: form.querySelector('#member-department').value,
+            avatar: 'https://via.placeholder.com/80',
+            tasksCompleted: 0,
+            currentTasks: 0
+        };
+
+        this.teamMembers.push(newMember);
+        this.saveToLocalStorage();
+        this.renderTeam();
+        this.updateDashboard();
+        closeModal();
+        
+        // Show success message
+        this.showNotification('Team member added successfully!', 'success');
+    }
+
+    addProject(form) {
+        const newProject = {
+            id: this.projects.length + 1,
+            name: form.querySelector('#project-name').value,
+            description: form.querySelector('#project-description').value,
+            manager: form.querySelector('#project-manager').value,
+            startDate: form.querySelector('#project-start-date').value,
+            endDate: form.querySelector('#project-end-date').value,
+            status: 'active',
+            progress: 0,
+            team: []
+        };
+
+        this.projects.push(newProject);
+        this.saveToLocalStorage();
+        this.renderProjects();
+        this.updateDashboard();
+        closeModal();
+        
+        this.showNotification('Project created successfully!', 'success');
+    }
+
+    addTask(form) {
+        const newTask = {
+            id: this.tasks.length + 1,
+            title: form.querySelector('#task-title').value,
+            description: form.querySelector('#task-description').value,
+            assignee: form.querySelector('#task-assignee').value,
+            priority: form.querySelector('#task-priority').value,
+            dueDate: form.querySelector('#task-due-date').value,
+            status: 'todo',
+            project: 'General',
+            completed: false
+        };
+
+        this.tasks.push(newTask);
+        this.saveToLocalStorage();
+        this.renderTasks();
+        this.updateDashboard();
+        closeModal();
+        
+        this.showNotification('Task created successfully!', 'success');
+    }
+
+    addWorkflow(form) {
+        const stepsText = form.querySelector('#workflow-steps').value;
+        const steps = stepsText.split('\n').filter(step => step.trim()).map(step => ({
+            name: step.trim(),
+            completed: false
+        }));
+
+        const newWorkflow = {
+            id: this.workflows.length + 1,
+            name: form.querySelector('#workflow-name').value,
+            description: form.querySelector('#workflow-description').value,
+            steps: steps,
+            activeInstances: 0
+        };
+
+        this.workflows.push(newWorkflow);
+        this.saveToLocalStorage();
+        this.renderWorkflows();
+        this.updateDashboard();
+        closeModal();
+        
+        this.showNotification('Workflow created successfully!', 'success');
+    }
+
+    saveToLocalStorage() {
+        localStorage.setItem('workflowApp_projects', JSON.stringify(this.projects));
+        localStorage.setItem('workflowApp_tasks', JSON.stringify(this.tasks));
+        localStorage.setItem('workflowApp_teamMembers', JSON.stringify(this.teamMembers));
+        localStorage.setItem('workflowApp_workflows', JSON.stringify(this.workflows));
+        localStorage.setItem('workflowApp_activities', JSON.stringify(this.activities));
+    }
+
+    loadFromLocalStorage() {
+        const savedProjects = localStorage.getItem('workflowApp_projects');
+        const savedTasks = localStorage.getItem('workflowApp_tasks');
+        const savedTeamMembers = localStorage.getItem('workflowApp_teamMembers');
+        const savedWorkflows = localStorage.getItem('workflowApp_workflows');
+        const savedActivities = localStorage.getItem('workflowApp_activities');
+
+        if (savedProjects) this.projects = JSON.parse(savedProjects);
+        if (savedTasks) this.tasks = JSON.parse(savedTasks);
+        if (savedTeamMembers) this.teamMembers = JSON.parse(savedTeamMembers);
+        if (savedWorkflows) this.workflows = JSON.parse(savedWorkflows);
+        if (savedActivities) this.activities = JSON.parse(savedActivities);
+    }
+
+    showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()">×</button>
+            </div>
+        `;
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 3000);
     }
 
     filterTasks() {
@@ -743,6 +906,12 @@ function closeModal() {
 }
 
 function getProjectForm() {
+    // Get current team members for the dropdown
+    const teamMembers = app ? app.teamMembers : [];
+    const managerOptions = teamMembers.map(member => 
+        `<option value="${member.name}">${member.name}</option>`
+    ).join('');
+
     return `
         <form id="project-form">
             <div class="form-group">
@@ -757,9 +926,7 @@ function getProjectForm() {
                 <label for="project-manager">Project Manager</label>
                 <select id="project-manager" required>
                     <option value="">Select Manager</option>
-                    <option value="Sarah Johnson">Sarah Johnson</option>
-                    <option value="David Wilson">David Wilson</option>
-                    <option value="Jennifer Adams">Jennifer Adams</option>
+                    ${managerOptions}
                 </select>
             </div>
             <div class="form-group">
@@ -779,6 +946,12 @@ function getProjectForm() {
 }
 
 function getTaskForm() {
+    // Get current team members for the dropdown
+    const teamMembers = app ? app.teamMembers : [];
+    const assigneeOptions = teamMembers.map(member => 
+        `<option value="${member.name}">${member.name}</option>`
+    ).join('');
+
     return `
         <form id="task-form">
             <div class="form-group">
@@ -793,10 +966,7 @@ function getTaskForm() {
                 <label for="task-assignee">Assignee</label>
                 <select id="task-assignee" required>
                     <option value="">Select Assignee</option>
-                    <option value="John Doe">John Doe</option>
-                    <option value="Mike Smith">Mike Smith</option>
-                    <option value="Lisa Chen">Lisa Chen</option>
-                    <option value="Alex Brown">Alex Brown</option>
+                    ${assigneeOptions}
                 </select>
             </div>
             <div class="form-group">
