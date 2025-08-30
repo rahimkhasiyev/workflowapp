@@ -143,6 +143,47 @@ body {
     background: #f7fafc;
 }
 
+.user-menu {
+    position: relative;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 150px;
+    z-index: 1000;
+    display: none;
+    margin-top: 5px;
+}
+
+.user-dropdown.active {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 14px;
+    color: #2d3748;
+}
+
+.dropdown-item:hover {
+    background: #f7fafc;
+}
+
+.dropdown-item i {
+    width: 16px;
+    text-align: center;
+}
+
 .user-avatar {
     width: 40px;
     height: 40px;
@@ -801,6 +842,29 @@ body {
     gap: 15px;
     justify-content: flex-end;
     margin-top: 30px;
+}
+
+.login-info {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f7fafc;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.login-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #2d3748;
+}
+
+.login-info strong {
+    color: #2d3748;
+}
+
+.login-info em {
+    color: #718096;
+    font-style: italic;
 }
 
 /* Notifications */

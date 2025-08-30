@@ -71,10 +71,20 @@
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="Search..." id="search-input">
                     </div>
-                    <div class="user-menu">
-                        <img src="https://via.placeholder.com/40" alt="User" class="user-avatar">
-                        <span class="user-name">John Doe</span>
+                    <div class="user-menu" onclick="toggleUserDropdown()">
+                        <img src="https://via.placeholder.com/40" alt="User" class="user-avatar" id="current-user-avatar">
+                        <span class="user-name" id="current-user-name">Not Logged In</span>
                         <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <div class="dropdown-item" onclick="showLoginModal()">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </div>
+                        <div class="dropdown-item" onclick="logout()" id="logout-item" style="display: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -276,6 +286,42 @@
             </div>
             <div class="modal-body" id="modal-body">
                 <!-- Modal content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Login</h3>
+                <button class="modal-close" onclick="closeLoginModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeLoginModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+                <div class="login-info">
+                    <p><strong>Demo Users:</strong></p>
+                    <p>• john.doe@company.com (password: 123)</p>
+                    <p>• sarah.johnson@company.com (password: 123)</p>
+                    <p>• mike.smith@company.com (password: 123)</p>
+                    <p>• lisa.chen@company.com (password: 123)</p>
+                    <p><em>Or use any email from your team members with password: 123</em></p>
+                </div>
             </div>
         </div>
     </div>

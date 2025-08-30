@@ -6,11 +6,13 @@ class WorkflowApp {
         this.teamMembers = [];
         this.workflows = [];
         this.activities = [];
+        this.currentUser = null;
         
         this.initializeApp();
         this.setupEventListeners();
         this.loadFromLocalStorage();
         this.loadSampleData(); // Only loads if no saved data exists
+        this.checkLoginStatus();
         this.updateDashboard();
     }
 
@@ -825,6 +827,59 @@ class WorkflowApp {
         }, 3000);
     }
 
+    checkLoginStatus() {
+        const savedUser = localStorage.getItem('workflowApp_currentUser');
+        if (savedUser) {
+            this.currentUser = JSON.parse(savedUser);
+            this.updateUserInterface();
+        }
+    }
+
+    login(email, password) {
+        // Find user by email
+        const user = this.teamMembers.find(member => member.email === email);
+        
+        if (!user) {
+            this.showNotification('User not found. Please check your email.', 'error');
+            return false;
+        }
+        
+        // Simple password check (in real app, this would be more secure)
+        if (password !== '123') {
+            this.showNotification('Incorrect password. Try: 123', 'error');
+            return false;
+        }
+        
+        this.currentUser = user;
+        localStorage.setItem('workflowApp_currentUser', JSON.stringify(user));
+        this.updateUserInterface();
+        this.showNotification(`Welcome back, ${user.name}!`, 'success');
+        return true;
+    }
+
+    logout() {
+        this.currentUser = null;
+        localStorage.removeItem('workflowApp_currentUser');
+        this.updateUserInterface();
+        this.showNotification('You have been logged out.', 'info');
+    }
+
+    updateUserInterface() {
+        const userNameElement = document.getElementById('current-user-name');
+        const userAvatarElement = document.getElementById('current-user-avatar');
+        const logoutItem = document.getElementById('logout-item');
+        
+        if (this.currentUser) {
+            userNameElement.textContent = this.currentUser.name;
+            userAvatarElement.src = this.currentUser.avatar;
+            logoutItem.style.display = 'block';
+        } else {
+            userNameElement.textContent = 'Not Logged In';
+            userAvatarElement.src = 'https://via.placeholder.com/40';
+            logoutItem.style.display = 'none';
+        }
+    }
+
     filterTasks() {
         const statusFilter = document.getElementById('task-status-filter');
         const priorityFilter = document.getElementById('task-priority-filter');
@@ -1050,11 +1105,60 @@ function getWorkflowForm() {
 let app;
 document.addEventListener('DOMContentLoaded', () => {
     app = new WorkflowApp();
+    
+    // Setup login form
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (app.login(email, password)) {
+                closeLoginModal();
+                loginForm.reset();
+            }
+        });
+    }
 });
 
 // Close modal when clicking outside
 document.getElementById('modal-overlay').addEventListener('click', (e) => {
     if (e.target.id === 'modal-overlay') {
         closeModal();
+    }
+});
+
+// Global functions for login system
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('user-dropdown');
+    dropdown.classList.toggle('active');
+}
+
+function showLoginModal() {
+    const loginModal = document.getElementById('login-modal');
+    loginModal.classList.add('active');
+    document.getElementById('login-email').focus();
+}
+
+function closeLoginModal() {
+    const loginModal = document.getElementById('login-modal');
+    loginModal.classList.remove('active');
+}
+
+function logout() {
+    if (app) {
+        app.logout();
+    }
+    toggleUserDropdown();
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const userMenu = document.querySelector('.user-menu');
+    const dropdown = document.getElementById('user-dropdown');
+    
+    if (!userMenu.contains(e.target) && dropdown.classList.contains('active')) {
+        dropdown.classList.remove('active');
     }
 });
